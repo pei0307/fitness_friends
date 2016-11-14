@@ -1,10 +1,16 @@
 package com.google.firebase.codelab.friendlychat;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,11 +32,12 @@ public class PostJoinActivity extends AppCompatActivity {
     private String mUsername;
     private String mPhotoUrl;
     private DatabaseReference mFirebaseDatabaseReference;
+    private ViewPager mViewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.Tab_layout);
+        TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
         tabLayout.addTab(tabLayout.newTab().setText("Post"));
         tabLayout.addTab(tabLayout.newTab().setText("Join"));
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -47,18 +54,12 @@ public class PostJoinActivity extends AppCompatActivity {
             }
         }
 
-
-
-
-        //mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        //mViewPager.setAdapter(new MyPagerAdapter());
-        //mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
-
-        mMessageEditText = (EditText)findViewById(R.id.Post_Input_content);
-
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager.setAdapter(new MyPagerAdapter());
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-
+        mMessageEditText = (EditText)findViewById(R.id.Post_Input_content);
 
         Button button = (Button)findViewById(R.id.Post_Button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -81,9 +82,8 @@ public class PostJoinActivity extends AppCompatActivity {
         });
 
     }
-    /*
     class MyPagerAdapter extends PagerAdapter {
-        private int pageCount = 3;
+        private int pageCount = 2;
         @Override
         public int getCount() {
             return pageCount;
@@ -101,19 +101,54 @@ public class PostJoinActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            View view = getLayoutInflater().inflate(R.layout.pager_items, container, false);
+            View view = getLayoutInflater().inflate(R.layout.my_viewpager, container, false);
             container.addView(view);
-            TextView title = (TextView) view.findViewById(R.id.textView_item_title);
-            title.setText("" + (position + 1));
+
+            if(position==0)
+            {
+                TextView T_Time=(TextView)view.findViewById(R.id.textView_1);
+                T_Time.setVisibility(View.INVISIBLE);
+                TextView T_Pos=(TextView)view.findViewById(R.id.textView_2);
+                T_Pos.setVisibility(View.INVISIBLE);
+                TextView T_Type=(TextView)view.findViewById(R.id.textView_3);
+                T_Type.setVisibility(View.INVISIBLE);
+                EditText E_Time=(EditText)view.findViewById(R.id.Edit_Time);
+                E_Time.setVisibility(View.INVISIBLE);
+                EditText E_Pos=(EditText)view.findViewById(R.id.Edit_Pos);
+                E_Pos.setVisibility(View.INVISIBLE);
+                EditText E_Type=(EditText)view.findViewById(R.id.Edit_Type);
+                E_Type.setVisibility(View.INVISIBLE);
+            }
+            else
+            {
+                TextView T_Time=(TextView)view.findViewById(R.id.textView_1);
+                T_Time.setVisibility(View.VISIBLE);
+                TextView T_Pos=(TextView)view.findViewById(R.id.textView_2);
+                T_Pos.setVisibility(View.VISIBLE);
+                TextView T_Type=(TextView)view.findViewById(R.id.textView_3);
+                T_Type.setVisibility(View.VISIBLE);
+                EditText E_Time=(EditText)view.findViewById(R.id.Edit_Time);
+                E_Time.setVisibility(View.VISIBLE);
+                EditText E_Pos=(EditText)view.findViewById(R.id.Edit_Pos);
+                E_Pos.setVisibility(View.VISIBLE);
+                EditText E_Type=(EditText)view.findViewById(R.id.Edit_Type);
+                E_Type.setVisibility(View.VISIBLE);
+            }
+            //TextView title = (TextView) view.findViewById(R.id.textView_item_title);
+            //title.setText("" + (position + 1));
             return view;
         }
+
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
     }
-    */
+
+
+
+
     private void startNextPage(){
         Intent intent = new Intent();
         intent.setClass(this , MainActivity.class);
